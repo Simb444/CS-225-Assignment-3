@@ -60,8 +60,24 @@ public class Race extends Application{
         );
 
 
+        ArrayList <Car> temp = new ArrayList<>();
+        temp.add(car1);
+        temp.add(car2);
+        temp.add(car3);
+        temp.add(car4);
 
+        ArrayList <Car> winnerList = new ArrayList<>();
 
+        placeSort(temp, winnerList);
+
+        winnerInfo = new Text("The winner is " + winnerList.get(0).getName() +" with a time of " +
+                ((winnerList.get(0).getSpeed()-70)*-1) + " minutes.\n" +
+                "In second place is " +  winnerList.get(1).getName() +" with a time of " +
+                ((winnerList.get(1).getSpeed()-70)*-1) + " minutes.\n" +
+                "In third place is " + winnerList.get(2).getName() +" with a time of " +
+                ((winnerList.get(2).getSpeed()-70)*-1) + " minutes.\n" +
+                "In fourth place is " + winnerList.get(3).getName() +" with a time of " +
+                ((winnerList.get(3).getSpeed()-70)*-1) + " minutes.\n");
 
         //Initializing the stops, setting their size and placement
         stopA = new Text("A");
@@ -88,6 +104,64 @@ public class Race extends Application{
         stopD.setScaleX(5);
         stopD.setScaleY(5);
 
+    }
+
+    /**
+     * recursive method for determining placement of cars based on their speed
+     * @param in the unsorted ArrayList for holding cars initially
+     * @param out the Arraylist which will added to in a sorted manner from max to minimum
+     * @author Arjun Bott
+     */
+    public void placeSort(ArrayList<Car> in, ArrayList<Car> out){
+        if(!in.isEmpty()){//base case, will only raise a flag as long as in is populated
+            int max = 0;
+            Car fastest = null;
+
+            for(Car c : in){//for loop searches for in's highest speed, calculating the fastest car
+                if(c.getSpeed() > max){
+                    max = c.getSpeed();
+                    fastest = c;
+                }
+            }
+
+            in.remove(fastest);//the fastest car is removed from in and added to out, leaving out with indices
+            //ordered from highest speed to lowest speed
+            out.add(fastest);
+            placeSort(in, out); //recursive call
+        }
+    }
+
+    /**
+     * Method which represents state of class
+     * @return String representation of class
+     * @author Arjun Bott
+     */
+    @Override
+    public String toString(){
+        return "Cars: " + car1.getName() + ", " + car2.getName() + ", " +  car3.getName() + ", " + car4.getName() +
+                "\nStart button: " + start.getText() + "\n Race track: " + raceTrack + "\nRacer info: " + racerInfo.getText()+
+                "\nWinner info: " + winnerInfo.getText() + "\nStops " + stopA.getText() + ", " + stopB.getText() + ", "
+                + stopC.getText() + ", "+ stopD.getText();
+    }
+
+    /**
+     * Method to determine whether the current object matches its argument
+     * @param obj the object being compared to the current object
+     * @return true if the objects have the same car1 and racerInfo
+     * @author Arjun Bott
+     */
+    @Override
+    public boolean equals(Object obj){
+        if(obj == this) return true;
+        if(obj == null) return false;
+        if(obj.getClass() == this.getClass()){
+            Race other = (Race) obj;
+            return car1.equals(other.car1) &&
+                    racerInfo.equals(other.racerInfo);
+        }
+        else{
+            return false;
+        }
     }
 
     //Overriding start method to set up elements of GUI
@@ -182,6 +256,12 @@ public class Race extends Application{
                     });
                 }
             });
+
+            //Testing toString and equals methods of Car and Race classes
+            System.out.println(car1.toString() + "\n");
+            System.out.println(car1.equals(car1) + "\n");
+            System.out.println(toString() + "\n");
+            System.out.println(equals(this) + "\n");
 
         } catch (Exception e) { //Catch statement for exception handling
 
